@@ -91,14 +91,15 @@ class Widget(object):
 # Commands to spawn
 class Commands(object):
     browser = 'chromium'
+    mail = 'thunderbird'
     dmenu = 'dmenu_run -i -b -p ">>>" -fn "-*-fixed-*-*-*-*-18-*-*-*-*-*-*-*" -nb "#15181a" -nf "#fff" -sb "#333" -sf "#fff"'
     file_manager = 'caja --no-desktop'
     lock_screen = 'mate-screensaver-command -l'
     screenshot = 'mate-screenshot'
     terminal = 'mate-terminal'
     trackpad_toggle = "synclient TouchpadOff=$(synclient -l | grep -c 'TouchpadOff.*=.*0')"
-    volume_up = 'amixer -q -c 1 sset Master 5dB+'
-    volume_down = 'amixer -q -c 1 sset Master 5dB-'
+    volume_up = 'amixer -q -c 0 sset Master 5dB+'
+    volume_down = 'amixer -q -c 0 sset Master 5dB-'
     volume_toggle = 'amixer -q -D pulse sset Master 1+ toggle'
 
 
@@ -144,6 +145,7 @@ keys = [
     # Commands: Application Launchers
     Key([mod], 'space', lazy.spawn(Commands.dmenu)),
     Key([mod], 'n', lazy.spawn(Commands.browser)),
+    Key([mod], 'm', lazy.spawn(Commands.mail)),
     Key([mod], 'e', lazy.spawn(Commands.file_manager)),
     Key([mod], 'Return', lazy.spawn(Commands.terminal)),
 
@@ -295,7 +297,7 @@ import re
 def is_running(process):
     s = subprocess.Popen(["ps", "axuw"], stdout=subprocess.PIPE)
     for x in s.stdout:
-        if re.search(process, x):
+        if re.search(process.encode(), x):
             return True
     return False
 
@@ -311,3 +313,4 @@ def startup():
     execute_once("fcitx")
     execute_once('nm-applet')
     execute_once('mate-screensaver')
+    execute_once('feh -z --bg-fill --randomize --recursive /usr/share/backgrounds/mate/nature/')
